@@ -7,7 +7,6 @@ import numpy as np
 
 data_path='./Data/pd_speech_features.csv'
 
-
 def _nan_handler(data: pd.DataFrame)-> pd.DataFrame:
     for row in data.index:
         if data.loc[row,:].isna().sum() > 0:
@@ -25,15 +24,18 @@ def _z(col: pd.Series) -> pd.DataFrame:
     mod_z = ((col - med_col) / med_abs_dev)
     return np.abs(mod_z)
 
+
 def _mod_z(col: pd.Series) -> pd.DataFrame:
     med_col = col.median()
     med_abs_dev = (np.abs(col - med_col)).median()
     mod_z = 0.6745 * ((col - med_col) / med_abs_dev)
     return np.abs(mod_z)
 
+
 def _outlier_handler(data: pd.DataFrame)-> pd.DataFrame:
-    z_score = data.apply(_mod_z)
+    z_score = data.apply(_z)
     return z_score
+
 
 def load_data(path: str)-> pd.DataFrame:
     data = pd.read_csv(path)
