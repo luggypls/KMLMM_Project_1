@@ -47,12 +47,4 @@ def load_data(path: str)-> pd.DataFrame:
     X = data.drop(['id', 'class'], axis=1)
     return X, target
 
-aaa,y = load_data(data_path)
-bbb=_outlier_handler(aaa)
-
-
-
-outliers_by_column=[]
-for i in range(bbb.shape[1]):
-    outliers_by_column.append(bbb.shape[0]-sum((bbb < 3).T.iloc[i,:]))
     
