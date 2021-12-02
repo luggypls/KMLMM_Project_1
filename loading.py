@@ -2,8 +2,6 @@ import pandas as pd
 import numpy as np
 
 
-data_path='./Data/pd_speech_features.csv'
-
 def _nan_handler1(data: pd.DataFrame)-> pd.DataFrame:
     for row in data.index:
         if data.loc[row,:].isna().sum() > 0:
@@ -27,7 +25,7 @@ def _nan_handler2(data: pd.DataFrame)-> pd.DataFrame:
 def _outlier_handler(data: pd.DataFrame)-> pd.DataFrame:
     mean=data.mean(axis=0)
     std=data.std(axis=0)
-    lower=mean-3*std
+    lower=mean+3*std
     upper=mean-3*std
     for col in data.columns:
         data[col]=np.where(data[col]<lower[col], lower[col], data[col])
