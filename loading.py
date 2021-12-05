@@ -25,8 +25,8 @@ def _nan_handler2(data: pd.DataFrame)-> pd.DataFrame:
 def _outlier_handler(data: pd.DataFrame)-> pd.DataFrame:
     mean=data.mean(axis=0)
     std=data.std(axis=0)
-    lower=mean+3*std
-    upper=mean-3*std
+    lower=mean-3*std
+    upper=mean+3*std
     for col in data.columns:
         data[col]=np.where(data[col]<lower[col], lower[col], data[col])
         data[col]=np.where(data[col]<upper[col], upper[col], data[col])
@@ -42,3 +42,6 @@ def load_data(path: str)-> pd.DataFrame:
     return X, target
 
 
+data_path='./Data/pd_speech_features.csv'
+data = pd.read_csv(data_path)
+xx,yy=load_data(data_path)
