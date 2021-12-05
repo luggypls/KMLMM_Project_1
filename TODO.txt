@@ -1,0 +1,33 @@
+
+def lognuniform(low=0, high=1, size=None, base=10):
+    return np.power(base, np.random.uniform(low, high, size))
+# TODO: place this function somewhere
+
+alpha = grid_search.best_params_['alpha']
+gamma = grid_search.best_params_['gamma']
+# make way to extract best_params
+
+
+kpca=KernelPCA(kernel='rbf',alpha=alpha,gamma = gamma, n_jobs=-1)
+kpca.fit(X2)
+X3=kpca.transform(X2)
+aaa=np.cumsum(kpca.lambdas_/sum(kpca.lambdas_))
+plt.plot(aaa)
+# TODO: plot cumulative sum of eigenvalues
+
+# TODO: plot score vs iteration BayesSearch
+
+# TODO: model with pca + scaling + parameters
+
+
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+ax = plt.axes(projection='3d')
+zline = tmp['mean_test_score']
+xline = np.log(tmp['param_gamma'].astype('float64'))
+yline = np.log(tmp['param_alpha'].astype('float64'))
+ax.plot_trisurf(xline, yline, zline, cmap='Set1', linewidth=0.3)
+ax.set_zlim(-0.5, 0)
+
+# TODO: plot 3D surface of search space (Model and/or PCA)
+
