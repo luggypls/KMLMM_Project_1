@@ -19,7 +19,6 @@ class GridKernelPCA():
         X_preimage = estimator.inverse_transform(X_reduced)
         return -1 * mean_squared_error(X, X_preimage)
 
-
     def __make_grid_search(self, data, model_params)-> GridSearchCV:
         kpca=KernelPCA(fit_inverse_transform=True, n_jobs=-1)
         gs = GridSearchCV(estimator=kpca,
@@ -56,7 +55,6 @@ class BayesKernelPCA():
         X_reduced = estimator.transform(X)
         X_preimage = estimator.inverse_transform(X_reduced)
         return -1 * mean_squared_error(X, X_preimage)
-
 
     def __make_grid_search(self, data, model_params, n_iter)-> GridSearchCV:
         kpca=KernelPCA(fit_inverse_transform=True, n_jobs=-1)
