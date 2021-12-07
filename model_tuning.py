@@ -79,3 +79,4 @@ class BayesSearch():
     
     def get_results(self)-> pd.DataFrame:
         return self.__results
+    

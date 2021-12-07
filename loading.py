@@ -38,3 +38,4 @@ def load_data(path: str)-> pd.DataFrame:
     target = data.loc[:,'class']
     X = data.drop(['id', 'class'], axis=1)
     return X, target
+

@@ -20,8 +20,8 @@ X,y = l.load_data(data_path)
 X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
 
 
-params={'alpha': l.lognuniform(low=-4,high=2,size=40, base=10),
-        'gamma': l.lognuniform(low=-4,high=2,size=40, base=10)
+params={'alpha': l.lognuniform(low=-4,high=2,size=50, base=10),
+        'gamma': l.lognuniform(low=-4,high=2,size=50, base=10)
         }
 
 kpca_bs=k.BayesKernelPCA(X_train, params, n_iter=200, kernel='rbf')
@@ -87,8 +87,9 @@ print(classification_report(y_test, clf.predict(X_test)))
 poly_best_params.update({'score':out.get_results().iloc[0,-1]})
 series=pd.Series(poly_best_params, name='poly')
 
-tmp.append(series)
+tmp=tmp.append(series)
 
 
 
 tmp.to_csv(model_params_path)
+
