@@ -1,7 +1,4 @@
-
-def lognuniform(low=0, high=1, size=None, base=10):
-    return np.power(base, np.random.uniform(low, high, size))
-# TODO: place this function somewhere
+# 0 healthy, 1 parkinson
 
 alpha = grid_search.best_params_['alpha']
 gamma = grid_search.best_params_['gamma']

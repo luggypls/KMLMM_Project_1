@@ -45,8 +45,9 @@ class BayesKernelPCA():
                  data: pd.DataFrame,
                  model_params: dict,
                  n_iter: int,
+                 kernel: str,
                  ):
-        self.__gridsearch = self.__make_grid_search(data,model_params, n_iter)
+        self.__gridsearch = self.__make_grid_search(kernel,data,model_params, n_iter)
         self._cv_results=self.__gridsearch.cv_results_
         self.__results=self.__make_results()
 
@@ -56,8 +57,8 @@ class BayesKernelPCA():
         X_preimage = estimator.inverse_transform(X_reduced)
         return -1 * mean_squared_error(X, X_preimage)
 
-    def __make_grid_search(self, data, model_params, n_iter)-> GridSearchCV:
-        kpca=KernelPCA(fit_inverse_transform=True, n_jobs=-1)
+    def __make_grid_search(self,kernel, data, model_params, n_iter)-> GridSearchCV:
+        kpca=KernelPCA(kernel=kernel, fit_inverse_transform=True, n_jobs=-1)
         gs = BayesSearchCV(estimator=kpca,
                             scoring=self.__my_scorer,
                             search_spaces=model_params,
@@ -69,7 +70,7 @@ class BayesKernelPCA():
     
     def __make_results(self)-> pd.DataFrame:
         return pd.DataFrame(self.__gridsearch.cv_results_).sort_values(
-            by='mean_test_score', ascending=False)['params', 'mean_test_score']
+            by='mean_test_score', ascending=False).loc[:,['params', 'mean_test_score']]
     
     def get_best_params(self)-> dict:
         return self.__gridsearch.best_params_
@@ -78,3 +79,4 @@ class BayesKernelPCA():
         return self.__results    
     
 
+#todo add transform
