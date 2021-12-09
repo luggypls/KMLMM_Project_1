@@ -42,3 +42,5 @@ class GridSearch():
     
     def get_results(self)-> pd.DataFrame:
         return self.__results
+
+# TODO: add BayesSearchcv

@@ -1,12 +1,18 @@
 import loading as l
+import gridsearch as g
 import scale as s
-from GridKernelFDA import GridKernelFDA
 from kfdaM import Kfda
-from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from GridKernelFDA import GridKernelFDA
 
-data_path='./Data/pd_speech_features.csv'
-X,y = l.load_data(data_path)
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+import numpy as np
+from sklearn.svm import SVC,LinearSVC
+from sklearn.metrics import make_scorer, roc_auc_score, recall_score, accuracy_score,confusion_matrix, precision_score, classification_report
+
+
+data_path = './Data/pd_speech_features.csv'
+X, y = l.load_data(data_path)
+
 
 X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
 
