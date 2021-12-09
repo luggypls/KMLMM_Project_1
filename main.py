@@ -1,4 +1,5 @@
 import loading as l
+import scale as s
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import minmax_scale
 from GridKernelFDA import GridKernelFDA
@@ -9,9 +10,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 data_path='./Data/pd_speech_features.csv'
 X,y = l.load_data(data_path)
 
-X_scaled = minmax_scale(X)
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, train_size=500, stratify=y)
+X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
 
 
 ############################# Kernel FDA ###########################################
