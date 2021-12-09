@@ -43,11 +43,10 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
     clf_ : The internal NearestCentroid classifier used in prediction.
     """
 
-    def __init__(self, n_components=2, kernel='linear', robustness_offset=1e-8, gamma=None,
+    def __init__(self, n_components=2, kernel='linear', robustness_offset=1e-8,
                  **kwds):
         self.kernel = kernel
         self.n_components = n_components
-        self.gamma = gamma
         self.kwds = kwds
         self.robustness_offset = robustness_offset
 
@@ -79,7 +78,7 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
             self.y_[:, np.newaxis])
 
         K = pairwise_kernels(
-            X, X, metric=self.kernel, gamma=self.gamma, **self.kwds)
+            X, X, metric=self.kernel, **self.kwds)
 
         m_classes = y_onehot.T @ K / y_onehot.T.sum(1)
         indices = (y_onehot @ np.arange(self.classes_.size)).astype('i')
@@ -111,7 +110,7 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
         """
         check_is_fitted(self)
         return pairwise_kernels(
-            X, self.X_, metric=self.kernel, gamma=self.gamma, **self.kwds
+            X, self.X_, metric=self.kernel, **self.kwds
         ) @ self.weights_
 
     def predict(self, X):
