@@ -1,7 +1,5 @@
 import loading as l
 import scale as s
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import minmax_scale
 from GridKernelFDA import GridKernelFDA
 from kfdaM import Kfda
 from sklearn.metrics import confusion_matrix, classification_report
