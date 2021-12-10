@@ -62,7 +62,7 @@ class BayesKernelPCA():
         gs = BayesSearchCV(estimator=kpca,
                             scoring=self.__my_scorer,
                             search_spaces=model_params,
-                            cv=3,
+                            cv=5,
                             n_iter=n_iter
                             )
         gs.fit(data)
