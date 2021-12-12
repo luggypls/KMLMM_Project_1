@@ -21,6 +21,9 @@ kernel_params_path='./Params/Kpca_params.csv'
 model_params_path='./Params/model_params.csv'
 
 
+N_iter=30
+
+
 X, y = l.load_data(data_path)
 X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
 
@@ -33,7 +36,7 @@ params={'alpha': l.lognuniform(low=-4,high=2,size=75, base=10),
         'gamma': l.lognuniform(low=-4,high=2,size=75, base=10)
         }
 
-kpca_r_bs=k.BayesKernelPCA(X_train, params, n_iter=200, kernel='rbf')
+kpca_r_bs=k.BayesKernelPCA(X_train, params, n_iter=N_iter, kernel='rbf')
 
 kpca_r_best_params=kpca_r_bs.get_best_params()
 score_r=kpca_r_bs.get_results().iloc[0,-1]
@@ -53,7 +56,7 @@ poly_params={'alpha': l.lognuniform(low=-3,high=2,size=60, base=10),
         'coef0': l.lognuniform(low=-4,high=2,size=60, base=10)
         }
 
-kpca_p_bs=k.BayesKernelPCA(X_train, poly_params, n_iter=200, kernel='poly')
+kpca_p_bs=k.BayesKernelPCA(X_train, poly_params, n_iter=N_iter, kernel='poly')
 
 kpca_p_best_params=kpca_p_bs.get_best_params()
 score_p=kpca_p_bs.get_results().iloc[0,-1]
@@ -122,7 +125,7 @@ params={'C': l.lognuniform(low=-3,high=2,size=75, base=10),
 
 metrics=make_scorer(roc_auc_score)
 clf=SVC(kernel='rbf')
-rbf_bs=g.GridSearch(X_train, y_train, clf, metrics, params)
+rbf_bs=g.BayesSearch(X_train, y_train, clf, metrics, params, n_iter=N_iter)
 
 rbf_best_params=rbf_bs.get_best_params()
 
@@ -145,23 +148,13 @@ print('rbf done!')
 
 
 
-gs=GridSearchCV(estimator=clf,
-            scoring=metrics,
-            param_grid=params,
-            n_jobs=-1
-            ).fit(X_train,y_train)
-
-gs_results=pd.DataFrame(gs.cv_results_)
-
-
-
 poly_params={'C': l.lognuniform(low=-3,high=2,size=75, base=10),
         'gamma': l.lognuniform(low=-4,high=2,size=75, base=10),
         'degree': [2,3,4,5,6,7,8,9,10],
         'coef0': l.lognuniform(low=-4,high=2,size=75, base=10)
         }
 clf=SVC(kernel='poly')
-poly_bs=g.BayesSearch(X_train, y_train, clf, metrics, poly_params, n_iter=150)
+poly_bs=g.BayesSearch(X_train, y_train, clf, metrics, poly_params, n_iter=N_iter)
 poly_best_params=poly_bs.get_best_params()
 clf=SVC(kernel='poly',**poly_best_params)
 clf.fit(X_train, y_train)
@@ -190,7 +183,7 @@ sigmoid_params={'C': l.lognuniform(low=-3,high=2,size=75, base=10),
         'coef0': l.lognuniform(low=-4,high=2,size=75, base=10)
         }
 clf=SVC(kernel='sigmoid')
-sigmoid_bs=g.BayesSearch(X_train, y_train, clf, metrics, poly_params, n_iter=150)
+sigmoid_bs=g.BayesSearch(X_train, y_train, clf, metrics, poly_params, n_iter=N_iter)
 sigmoid_best_params=sigmoid_bs.get_best_params()
 clf=SVC(kernel='sigmoid',**sigmoid_best_params)
 clf.fit(X_train, y_train)
