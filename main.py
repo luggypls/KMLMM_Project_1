@@ -12,39 +12,6 @@ from sklearn.metrics import make_scorer, roc_auc_score, recall_score, accuracy_s
 confusion_matrix, precision_score, classification_report, balanced_accuracy_score, f1_score
 from sklearn.model_selection import train_test_split
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 data_path='./Data/pd_speech_features.csv'
 kernel_params_path='./Params/Kpca_params.csv'
 model_params_path='./Params/model_params.csv'
