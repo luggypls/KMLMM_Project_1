@@ -2,11 +2,15 @@ import loading as l
 import model_tuning as g
 import kernelpca_gs as k
 import scaling as s
-
+from kfdaM import Kfda
+from GridKernelFDA import GridKernelFDA
 import seaborn as sns
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
 import numpy as np
 import pandas as pd
 from sklearn.svm import SVC,LinearSVC
+
 from sklearn.decomposition import KernelPCA
 from sklearn.metrics import make_scorer, roc_auc_score, recall_score, accuracy_score,\
 confusion_matrix, precision_score, classification_report, balanced_accuracy_score, f1_score
@@ -16,7 +20,10 @@ data_path='./Data/pd_speech_features.csv'
 kernel_params_path='./Params/Kpca_params.csv'
 model_params_path='./Params/model_params.csv'
 
-X,y = l.load_data(data_path)
+
+X, y = l.load_data(data_path)
+X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
+
 
 
 X_train, X_test, y_train, y_test = s.split_and_scale(X, y)
@@ -239,3 +246,31 @@ print('ROC:',roc_auc_score(y, y_pred))
 print('Accuracy:',accuracy_score(y, y_pred))
 print('f1_score:',f1_score(y, y_pred))
 print('DOC:', cm[0,0]*cm[1,1]/(cm[1,0]*cm[0,1]))
+
+############################# Kernel FDA ###########################################
+param = {'kernel' : ['linear', 'rbf', 'poly', 'sigmoid', 'laplacian', 'chi2'],
+         'n_components' : [1],
+         'robustness_offset': [1e-9, 1e-8, 1e-7, 1e-6]}
+gsKernel = GridKernelFDA(X_train, y_train, param, metrics=['accuracy', 'f1', 'recall'])
+best_params = gsKernel.get_best_params()
+
+cls = Kfda(**best_params)
+cls.fit(X_train, y_train)
+preds = cls.predict(X_test)
+
+reportFDA = classification_report(y_test, preds)
+cm = confusion_matrix(y_test, preds)
+print(reportFDA)
+print(cm)
+
+
+############################# LDA ###########################################
+clsLDA = LinearDiscriminantAnalysis(n_components=1)
+clsLDA.fit(X_train, y_train)
+predsLDA = clsLDA.predict(X_test)
+
+reportLDA = classification_report(y_test, predsLDA)
+cmLDA = confusion_matrix(y_test, predsLDA)
+print(reportLDA)
+print(cmLDA)
+

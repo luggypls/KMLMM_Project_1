@@ -9,6 +9,8 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.preprocessing import OneHotEncoder
 import numpy as np
+from sklearn.metrics.pairwise import linear_kernel, laplacian_kernel, rbf_kernel,\
+                                     chi2_kernel, sigmoid_kernel, polynomial_kernel
 
 
 class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
@@ -43,13 +45,20 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
     clf_ : The internal NearestCentroid classifier used in prediction.
     """
 
-    def __init__(self, n_components=2, kernel='linear', robustness_offset=1e-8, gamma=None,
-                 **kwds):
+    def __init__(self, n_components=1, 
+                kernel='linear', 
+                robustness_offset=1e-8,
+                gamma = None,
+                coef0 = 1,
+                degree = 3,
+                **kwds):
         self.kernel = kernel
         self.n_components = n_components
-        self.gamma = gamma
         self.kwds = kwds
         self.robustness_offset = robustness_offset
+        self.gamma = gamma
+        self.degree = degree
+        self.coef0 = coef0
 
         if kernel is None:
             self.kernel = 'linear'
@@ -78,8 +87,20 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
         y_onehot = OneHotEncoder().fit_transform(
             self.y_[:, np.newaxis])
 
-        K = pairwise_kernels(
-            X, X, metric=self.kernel, gamma=self.gamma, **self.kwds)
+        
+        if self.kernel in ['polynomial', 'poly']:
+            K = polynomial_kernel(X, X, self.degree, self.gamma, self.coef0)
+        elif self.kernel == 'rbf': 
+            K = rbf_kernel(X, X, self.gamma)
+        elif self.kernel == 'laplacian':
+            K = laplacian_kernel(X, X, self.gamma)
+        elif self.kernel == 'sigmoid':
+            K = sigmoid_kernel(X, X, self.gamma, self.coef0)
+        elif self.kernel == 'chi2':
+            K = chi2_kernel(X, X, self.gamma)
+        else:
+            K = linear_kernel(X, X)
+
 
         m_classes = y_onehot.T @ K / y_onehot.T.sum(1)
         indices = (y_onehot @ np.arange(self.classes_.size)).astype('i')
@@ -110,9 +131,19 @@ class Kfda(BaseEstimator, ClassifierMixin, TransformerMixin):
             projected onto the fisher directions.
         """
         check_is_fitted(self)
-        return pairwise_kernels(
-            X, self.X_, metric=self.kernel, gamma=self.gamma, **self.kwds
-        ) @ self.weights_
+        if self.kernel == 'polynomial':
+            return polynomial_kernel(X, self.X_, self.degree, self.gamma, self.coef0) @ self.weights_
+        elif self.kernel == 'rbf': 
+            return rbf_kernel(X, self.X_, self.gamma) @ self.weights_
+        elif self.kernel == 'laplacian':
+            return laplacian_kernel(X, self.X_, self.gamma) @ self.weights_
+        elif self.kernel == 'sigmoid':
+            return sigmoid_kernel(X, self.X_, self.gamma, self.coef0) @ self.weights_
+        elif self.kernel == 'chi2':
+            return chi2_kernel(X, self.X_, self.gamma) @ self.weights_
+        else:
+            return linear_kernel(X, self.X_) @ self.weights_
+        
 
     def predict(self, X):
         """Perform classification on an array of test vectors X.
