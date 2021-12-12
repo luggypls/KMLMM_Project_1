@@ -4,6 +4,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import mean_squared_error
 from skopt import BayesSearchCV
 
+
 class GridKernelPCA():
     def __init__(self,
                  data: pd.DataFrame,
@@ -62,7 +63,7 @@ class BayesKernelPCA():
         gs = BayesSearchCV(estimator=kpca,
                             scoring=self.__my_scorer,
                             search_spaces=model_params,
-                            cv=5,
+                            cv=3,
                             n_iter=n_iter
                             )
         gs.fit(data)
