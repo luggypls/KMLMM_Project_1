@@ -2,6 +2,10 @@ import pandas as pd
 import numpy as np
 
 
+def lognuniform(low=0, high=1, size=None, base=10):
+    return np.power(base, np.random.uniform(low, high, size))
+
+
 def _nan_handler1(data: pd.DataFrame)-> pd.DataFrame:
     for row in data.index:
         if data.loc[row,:].isna().sum() > 0:
@@ -34,3 +38,4 @@ def load_data(path: str)-> pd.DataFrame:
     target = data.loc[:,'class']
     X = data.drop(['id', 'class'], axis=1)
     return X, target
+

@@ -4,7 +4,6 @@
 
 '''
 metrics = {'accuracy': 'accuracy',
-           'f1_score': 'f1_score',
            'roc': roc_scorer,
            'recall': recall_scorer
            }
